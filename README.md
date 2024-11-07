@@ -12,4 +12,4 @@ $ cargo b --release --features=tectonic-backend
 ```
 
 If one does not want to use tectonic backend but using local LaTeX compiler to
-compile vesti, see [this](https://github.com/e0328eric/vesti).
+compile vesti, see [the main vesti repo](https://github.com/e0328eric/vesti).
