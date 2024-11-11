@@ -168,7 +168,7 @@ fn compile_in_watch(
                     };
                 }
 
-                println!("Press Ctrl+C to exit...");
+                println!("\r\nPress Ctrl+C to exit...");
 
                 if let Err(err) = env::set_current_dir(&current_dir) {
                     pretty_print_note(None, err.into(), None).unwrap();
