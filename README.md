@@ -4,7 +4,7 @@ I don't know why that the tectonic stable backend does not compiled. But at
 least, for recent tectonic branch it does compile.
 
 This repo is purposed to compile vesti with tectonic backend. I tested it on
-MSYS2 sandbox on Windows 11.
+MSYS2 sandbox and powershell on Windows 11.
 
 # Installation
 ## Prerequisits
