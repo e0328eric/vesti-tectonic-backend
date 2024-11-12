@@ -1,4 +1,4 @@
-# vesti-tectonic-git
+# vesti-tectonic-backend
 
 I don't know why that the tectonic stable backend does not compiled. But at
 least, for recent tectonic branch it does compile.
