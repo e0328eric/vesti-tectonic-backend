@@ -31,5 +31,27 @@ If you want to install, replace the last command with the following:
 > cargo install --path . --features=tectonic-backend
 ```
 
+## Linux and Macos
+On linux, just install following libraries which tectonic requires
+- fontconfig (except on macOS)
+- freetype2
+- graphite2
+- harfbuzz
+- ICU4C
+- libpng
+- zlib
+These list is presented in the [tectonic
+book](https://tectonic-typesetting.github.io/book/latest/howto/build-tectonic/external-dep-install.html).
+
+Then run this command to build
+```console
+$ cargo build --features=tectonic-backend
+```
+or this one to install
+```console
+$ cargo install --path . --features=tectonic-backend
+```
+
+# Notes
 If one does not want to use tectonic backend but using local LaTeX compiler to
 compile vesti, see [the main vesti repo](https://github.com/e0328eric/vesti).
