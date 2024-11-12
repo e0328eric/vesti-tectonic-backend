@@ -40,8 +40,8 @@ On linux, just install following libraries which tectonic requires
 - ICU4C
 - libpng
 - zlib
-These list is presented in the [tectonic
-book](https://tectonic-typesetting.github.io/book/latest/howto/build-tectonic/external-dep-install.html).
+
+These list is presented in the [tectonic book](https://tectonic-typesetting.github.io/book/latest/howto/build-tectonic/external-dep-install.html).
 
 Then run this command to build
 ```console
