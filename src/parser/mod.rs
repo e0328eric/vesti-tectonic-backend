@@ -490,11 +490,11 @@ impl<'a> Parser<'a> {
         }
     }
 
-    fn parse_text_in_math<const REMOVE_FRONT_SPACE: bool>(&mut self) -> error::Result<Statement> {
-        let mut remove_back_space = false;
+    fn parse_text_in_math<const ADD_FRONT_SPACE: bool>(&mut self) -> error::Result<Statement> {
+        let mut add_back_space = false;
         let mut text: Latex = Vec::with_capacity(20);
 
-        if REMOVE_FRONT_SPACE {
+        if ADD_FRONT_SPACE {
             expect_peek!(self: TokenType::FntParam; self.peek_tok_location());
             if self.peek_tok() != TokenType::MathTextStart {
                 return Err(VestiErr::make_parse_err(
@@ -526,12 +526,12 @@ impl<'a> Parser<'a> {
 
         if self.peek_tok() == TokenType::FntParam {
             self.next_tok();
-            remove_back_space = true;
+            add_back_space = true;
         }
 
         Ok(Statement::PlainTextInMath {
-            remove_front_space: REMOVE_FRONT_SPACE,
-            remove_back_space,
+            add_front_space: ADD_FRONT_SPACE,
+            add_back_space,
             text,
         })
     }
