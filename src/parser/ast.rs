@@ -50,8 +50,8 @@ pub enum Statement {
         denominator: Latex,
     },
     PlainTextInMath {
-        add_front_space: bool,
-        add_back_space: bool,
+        remove_front_space: bool,
+        remove_back_space: bool,
         text: Latex,
     },
     LatexFunction {

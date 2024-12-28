@@ -432,6 +432,8 @@ impl<'a> Parser<'a> {
             )),
         }
     }
+
+    #[allow(clippy::collapsible_else_if)]
     fn parse_open_delimiter(&mut self) -> error::Result<Statement> {
         if self.use_old_bracket {
             let delimiter = self.next_tok().literal;
@@ -490,11 +492,11 @@ impl<'a> Parser<'a> {
         }
     }
 
-    fn parse_text_in_math<const ADD_FRONT_SPACE: bool>(&mut self) -> error::Result<Statement> {
-        let mut add_back_space = false;
+    fn parse_text_in_math<const REMOVE_FRONT_SPACE: bool>(&mut self) -> error::Result<Statement> {
+        let mut remove_back_space = false;
         let mut text: Latex = Vec::with_capacity(20);
 
-        if ADD_FRONT_SPACE {
+        if REMOVE_FRONT_SPACE {
             expect_peek!(self: TokenType::FntParam; self.peek_tok_location());
             if self.peek_tok() != TokenType::MathTextStart {
                 return Err(VestiErr::make_parse_err(
@@ -526,12 +528,12 @@ impl<'a> Parser<'a> {
 
         if self.peek_tok() == TokenType::FntParam {
             self.next_tok();
-            add_back_space = true;
+            remove_back_space = true;
         }
 
         Ok(Statement::PlainTextInMath {
-            add_front_space: ADD_FRONT_SPACE,
-            add_back_space,
+            remove_front_space: REMOVE_FRONT_SPACE,
+            remove_back_space,
             text,
         })
     }
@@ -708,7 +710,15 @@ impl<'a> Parser<'a> {
         // TODO: fs::canonicalize returns error when there is no such path for
         // `file_path_str`. But vesti's error message is so ambiguous to recognize
         // whether error occurs at here. Make a new error variant to handle this.
-        let file_path = fs::canonicalize(file_path_str)?;
+        let file_path = match fs::canonicalize(&file_path_str) {
+            Ok(path) => path,
+            Err(err) => {
+                return Err(VestiErr::from_io_err(
+                    err,
+                    format!("cannot get the canonicalized name for {file_path_str}"),
+                ))
+            }
+        };
 
         // name mangling process
         let mut hasher = Md5::new();
@@ -831,14 +841,20 @@ impl<'a> Parser<'a> {
 
         let (file_path_str, raw_filename) = self.parse_filename_helper(import_file_loc)?;
 
-        fs::copy(
-            file_path_str,
-            format!(
-                "{}/{}",
-                constants::VESTI_LOCAL_DUMMY_DIR,
-                raw_filename.to_string_lossy()
-            ),
-        )?;
+        let into_copy_filename = format!(
+            "{}/{}",
+            constants::VESTI_LOCAL_DUMMY_DIR,
+            raw_filename.to_string_lossy()
+        );
+        match fs::copy(&file_path_str, &into_copy_filename) {
+            Ok(_) => {}
+            Err(err) => {
+                return Err(VestiErr::from_io_err(
+                    err,
+                    format!("cannot copy from {file_path_str} into {into_copy_filename}"),
+                ))
+            }
+        }
 
         Ok(Statement::NopStmt)
     }
@@ -890,8 +906,15 @@ impl<'a> Parser<'a> {
         );
 
         let module_data_pathbuf = PathBuf::from(format!("{}/vesti.ron", &mod_dir_path_str));
-
-        let contents = fs::read_to_string(module_data_pathbuf)?;
+        let contents = match fs::read_to_string(&module_data_pathbuf) {
+            Ok(contents) => contents,
+            Err(err) => {
+                return Err(VestiErr::from_io_err(
+                    err,
+                    format!("cannot read from {}", module_data_pathbuf.display()),
+                ))
+            }
+        };
         let ves_module = match ron::from_str::<VestiModule>(&contents) {
             Ok(ves_mod) => ves_mod,
             Err(err) => {
@@ -904,11 +927,18 @@ impl<'a> Parser<'a> {
 
         for export_file in ves_module.exports {
             let mod_filename = format!("{}/{}", &mod_dir_path_str, &export_file);
+            let into_copy_filename =
+                format!("{}/{}", constants::VESTI_LOCAL_DUMMY_DIR, export_file);
 
-            fs::copy(
-                &mod_filename,
-                format!("{}/{}", constants::VESTI_LOCAL_DUMMY_DIR, export_file),
-            )?;
+            match fs::copy(&mod_filename, &into_copy_filename) {
+                Ok(_) => {}
+                Err(err) => {
+                    return Err(VestiErr::from_io_err(
+                        err,
+                        format!("cannot copy from {mod_filename} into {into_copy_filename}"),
+                    ))
+                }
+            }
         }
 
         Ok(Statement::NopStmt)

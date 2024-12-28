@@ -589,10 +589,10 @@ fn parse_text_in_math() {
     let source3 = "$\"foo\"#$";
     let source4 = "$#\"foo\"#$";
 
-    let expected1 = "$\\text{foo}$";
-    let expected2 = "$\\text{ foo}$";
-    let expected3 = "$\\text{foo }$";
-    let expected4 = "$\\text{ foo }$";
+    let expected1 = "$\\text{ foo }$";
+    let expected2 = "$\\text{foo }$";
+    let expected3 = "$\\text{ foo}$";
+    let expected4 = "$\\text{foo}$";
 
     expected!(source1 should be expected1);
     expected!(source2 should be expected2);
@@ -634,7 +634,7 @@ makeatother
 // using raw \text LaTeX command.
 fn parsing_bug_fix002() {
     let source = "$oo\\text{oo}$ oo $oo\"oo\"$";
-    let expected = r"$\infty \text{\infty }$ oo $\infty \text{oo}$";
+    let expected = r"$\infty \text{\infty }$ oo $\infty \text{ oo }$";
 
     expected!(source should be expected);
 }
@@ -642,8 +642,8 @@ fn parsing_bug_fix002() {
 #[test]
 // Below example shows the reason to change the syntax of \left and \right pair
 fn parsing_bug_fix003() {
-    let source = "$?(it\\lambda(b-\\int))?$";
-    let expected = r"$\left(it\lambda(b-\int)\right)$";
+    let source = "$?(it\\lambda?(b-\\int)?)?$";
+    let expected = r"$\left(it\lambda\left(b-\int\right)\right)$";
 
     expected!(source should be expected);
 }
