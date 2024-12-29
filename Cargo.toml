@@ -1,6 +1,6 @@
 [package]
 name = "vesti"
-version = "0.14.1"
+version = "0.15.0"
 authors = ["Sungbae Jeong <almagest0328@gmail.com>"]
 description = "A preprocessor that compiles into LaTeX"
 repository = "https://github.com/e0328eric/vesti.git"
@@ -21,35 +21,6 @@ strip = true
 default = []
 tectonic-backend = ["tectonic"]
 
-[package.metadata.vcpkg]
-git = "https://github.com/microsoft/vcpkg"
-rev = "4a600e9fea71bd7872080cbb716797e04d30e6d3"
-overlay-triplets-path = "dist/vcpkg-triplets"
-
-# If other targets start using custom triplets like x86_64-pc-windows-msvc,
-# add them to crates/dep_support/src/lib.rs:new_from_vcpkg() to give users
-# guidance if they might need to set $VCPKGRS_TRIPLET.
-[package.metadata.vcpkg.target]
-x86_64-apple-darwin = { install = ["freetype", "harfbuzz[graphite2]", "icu"] }
-aarch64-apple-darwin = { triplet = "arm64-osx", install = [
-  "freetype",
-  "harfbuzz[graphite2]",
-  "icu",
-] }
-x86_64-unknown-linux-gnu = { install = [
-  "fontconfig",
-  "freetype",
-  "harfbuzz[graphite2]",
-  "icu",
-] }
-x86_64-pc-windows-msvc = { triplet = "x64-windows-static-release", install = [
-  "fontconfig",
-  "freetype",
-  "harfbuzz[graphite2]",
-  "icu",
-] }
-
-
 [dependencies]
 base64ct = { version = "1.6.0", features = ["alloc"] }
 clap = { version = "4", features = ["derive"] }
@@ -62,11 +33,13 @@ dirs = "5.0.1"
 pathdiff = "0.2"
 path-slash = "0.2.1"
 libc = "0.2"
-tectonic = { git = "https://github.com/tectonic-typesetting/tectonic.git", rev = "34d643ffb0a70036de298e1e50b99bd83035de67", optional = true, features = [
+tectonic = { version = "0.15.0", optional = true, features = [
   "external-harfbuzz",
 ] }
 ron = "0.8.1"
 serde = { version = "1.0.214", features = ["derive"] }
+rustpython-vm = "0.4.0"
+rustpython = "0.4.0"
 
-[target.'cfg(windows)'.dependencies]
+[target.'cfg(target_os = "windows")'.dependencies]
 windows = { version = "0.58.0", features = ["Win32_UI_WindowsAndMessaging"] }

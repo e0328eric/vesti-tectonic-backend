@@ -5,3 +5,6 @@
 /.fleet
 /Cargo.lock
 /**/vesti-cache
+/**/.vesti-dummy
+/main.ves
+/main.pdf
