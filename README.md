@@ -1,84 +1,44 @@
-# vesti
+# vesti-tectonic-backend
 
-A transpiler that compiles into LaTeX.
+I don't know why that the tectonic stable backend does not compiled. But at
+least, for recent tectonic branch it does compile.
 
-## Why need a LaTeX transpiler?
+This repo is purposed to compile vesti with tectonic backend. I tested it on
+MSYS2 sandbox and powershell on Windows 11.
 
-I used to make several documentations using LaTeX (or plainTeX, but TeX is quite cumbersome to write
-a document, especially very complex tables or put an image, for example).
-However, its markdown like syntax is not confortable to use it.
-For example, there is a simple LaTeX document.
-
-```tex
-% coprime is my custom class. See https://github.com/e0328eric/coprime.
-\documentclass[tikz, geometry]{coprime}
-
-\settitle{My First Document}{Sungbae Jeong}{}
-\setgeometry{a4paper, margin = 2.5cm}
-
-\begin{document}
-\section{Foo}
-Hello, World!
-\begin{figure}[ht]
-    \centering
-    \begin{tikzpicture}
-        \draw (0,0) -- (1,1);
-    \end{tikzpicture}
-\end{figure}
-
-Upper code is a figure using tikz.
-
-\end{document}
+# Installation
+## Prerequisits
+In the tectonic book, it recommends to use [cargo-vcpkg](https://crates.io/crates/cargo-vcpkg) to build it.
+One can install using the following command
+```powershell
+> cargo install cargo-vcpkg
 ```
+Also, python 3.12 is need to use vesti
 
-What I am anoying about to use it is `\begin` and `\end` block. Is there a way to write much simpler? This
-question makes me to start this project. Currently, below code is generated into upper LaTeX code
-using vesti except comments.
+## Windows Powershell
+Just run the batch file to install.
 
-```
-% coprime is my custom class. See https://github.com/e0328eric/coprime.
-docclass coprime (tikz, geometry)
+## Linux and Macos
+On linux, just install following libraries which tectonic requires
+- fontconfig (except on macOS)
+- freetype2
+- graphite2
+- harfbuzz
+- ICU4C
+- libpng
+- zlib
 
-\settitle{My First Document}{Sungbae Jeong}{}
-\setgeometry{a4paper, margin = 2.5cm}
+These list is presented in the [tectonic book](https://tectonic-typesetting.github.io/book/latest/howto/build-tectonic/external-dep-install.html).
 
-startdoc
-
-\section{Foo}
-Hello, World!
-useenv figure [ht] {
-    \centering
-    useenv tikzpicture {
-        \draw (0,0) -- (1,1);
-    }
-}
-
-Upper code is a figure using tikz.
-```
-
-## Installation
-Vesti can be installed using `cargo`.
-
+Then run this command to build
 ```console
-$ cargo install vesti
+$ cargo build --features=tectonic-backend
+```
+or this one to install
+```console
+$ cargo install --path . --features=tectonic-backend
 ```
 
-### tectonic backend compilation issue
-For a higher version of the rust compiler, somewhat tectonic backend is not
-compilable. See
-[vesti-tectonic-git](https://github.com/e0328eric/vesti-tectonic-git) if one
-want to use tectonic backend for vesti.
-
-## config file
-In default, it uses local `pdflatex` to compile vesti. If you want to change the default behavior, add `config.yaml` in `$CONFIG_PATH/vesti` and type like the following:
-```yaml
-engine:
-  main:
-    "tectonic"
-```
-This example defaults vesti to run `tectonic` backend. (You must download vesti using `tectonic-backend` to use `tectonic`). The full list for main engine is in `src/commands.rs`.
-
-## Warning
-
-This language is in beta version, so future break changes can be exist. Beware to use in the large
-projects.
+# Notes
+If one does not want to use tectonic backend but using local LaTeX compiler to
+compile vesti, see [the main vesti repo](https://github.com/e0328eric/vesti).
