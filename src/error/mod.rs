@@ -47,7 +47,7 @@ pub enum VestiParseErrKind {
     },
     ParseModuleRonErr(ron::error::SpannedError),
     PythonEvalErr {
-        note_msg: String,
+        msg: String,
     },
     IllegalUseErr {
         got: TokenType,
@@ -266,7 +266,7 @@ impl Error for VestiParseErrKind {
     }
     fn err_note_str(&self) -> Option<Vec<String>> {
         match self {
-            Self::PythonEvalErr { note_msg } => Some(vec![note_msg.clone()]),
+            Self::PythonEvalErr { msg: note_msg } => Some(vec![note_msg.clone()]),
             _ => None,
         }
     }
