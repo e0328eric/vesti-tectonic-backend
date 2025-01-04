@@ -189,14 +189,14 @@ impl<'p> Codegen<'p> {
             MathState::Text => {
                 output += "$";
                 for t in text {
-                    output += &self.eval_vesti(&t)?;
+                    output += &self.eval_vesti(t)?;
                 }
                 output += "$";
             }
             MathState::Inline => {
                 output += "\\[";
                 for t in text {
-                    output += &self.eval_vesti(&t)?;
+                    output += &self.eval_vesti(t)?;
                 }
                 output += "\\]";
             }
@@ -236,10 +236,10 @@ impl<'p> Codegen<'p> {
     ) -> error::Result<String> {
         let output = self.latex_to_string(text)?;
         Ok(match (remove_front_space, remove_back_space) {
-            (false, false) => format!("\\text{{ {} }}", output),
-            (true, false) => format!("\\text{{{} }}", output),
-            (false, true) => format!("\\text{{ {}}}", output),
-            (true, true) => format!("\\text{{{}}}", output),
+            (false, false) => format!("\\text{{{}}}", output),
+            (true, false) => format!("\\text{{ {}}}", output),
+            (false, true) => format!("\\text{{{} }}", output),
+            (true, true) => format!("\\text{{ {} }}", output),
         })
     }
 
@@ -371,6 +371,7 @@ impl<'p> Codegen<'p> {
         Ok(output)
     }
 
+    #[allow(clippy::too_many_arguments)]
     fn environment_def_to_string(
         &mut self,
         is_redefine: bool,
