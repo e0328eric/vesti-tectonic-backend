@@ -1,16 +1,14 @@
 #![allow(clippy::needless_raw_string_hashes)]
 
 use super::*;
-use crate::codegen::make_latex_format;
+use crate::codegen::Codegen;
 use crate::commands::LatexEngineType;
 
 macro_rules! expected {
     ($source: ident should be $expected: ident) => {{
-        let mut parser = Parser::new(Lexer::new($source), true);
-        assert_eq!(
-            $expected,
-            make_latex_format::<true>(&mut parser, LatexEngineType::Invalid).unwrap()
-        );
+        let parser = Parser::new(Lexer::new($source), true);
+        let mut codegen = Codegen::new(parser, LatexEngineType::Invalid);
+        assert_eq!($expected, codegen.make_latex_format::<true>().unwrap());
     }};
 }
 
