@@ -39,6 +39,3 @@ or this one to install
 $ cargo install --path . --features=tectonic-backend
 ```
 
-# Notes
-If one does not want to use tectonic backend but using local LaTeX compiler to
-compile vesti, see [the main vesti repo](https://github.com/e0328eric/vesti).
